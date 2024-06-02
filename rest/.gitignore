@@ -1,0 +1,37 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# Java and Maven specific
+*.class
+*.jar
+*.war
+*.ear
+
+
+# Operating System specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+*.env
+
+# Temporary files
+*.tmp
+
+# Custom exclusion for sensitive files
+# Replace with actual file names
+# sensitive-data.json
