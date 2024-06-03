@@ -1,8 +1,13 @@
 package spring.rest.model;
 
-import java.sql.Date;
+import java.util.Date;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,6 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "app_user")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
   @Id
@@ -17,6 +23,9 @@ public class User {
   private Long id;
   private String displayName;
   private String image;
+
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
   private Date createdAt;
 
   public User() {
