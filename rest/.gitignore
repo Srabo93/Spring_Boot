@@ -1,3 +1,4 @@
+HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -12,26 +13,21 @@ target/
 .springBeans
 .sts4-cache
 
-# Java and Maven specific
-*.class
-*.jar
-*.war
-*.ear
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# Operating System specific
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Environment variables
-*.env
-
-# Temporary files
-*.tmp
-
-# Custom exclusion for sensitive files
-# Replace with actual file names
-# sensitive-data.json
+### VS Code ###
+.vscode/
