@@ -28,12 +28,14 @@ public class AppConfig {
         user.setDisplayName(faker.name().username());
         userRepo.save(user);
 
-        Story story = new Story();
-        story.setTitle(faker.book().title());
-        story.setBody(faker.lorem().paragraph());
-        story.setPublicVisible(false);
-        story.setUser(user);
-        repo.save(story);
+        for (int j = 0; j < 4; j++) {
+          Story story = new Story();
+          story.setTitle(faker.book().title());
+          story.setBody(faker.lorem().paragraph());
+          story.setPublicVisible(false);
+          story.setUser(user);
+          repo.save(story);
+        }
 
       }
     };

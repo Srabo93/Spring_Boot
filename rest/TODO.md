@@ -1,0 +1,2 @@
+- [ ] Use DTO Pattern to make precise Rest Responses
+- [ ] Maybe include custom Queries

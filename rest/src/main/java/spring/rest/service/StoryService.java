@@ -1,6 +1,7 @@
 package spring.rest.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,11 @@ public class StoryService {
   }
 
   public List<Story> findAllStories() {
-
     return storyRepo.findAll();
   }
+
+  public Optional<Story> findStoryById(Long id) {
+    return storyRepo.findById(id);
+  }
+
 }
