@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.github.javafaker.Faker;
+
 import spring.rest.model.Story;
 import spring.rest.model.User;
 import spring.rest.repository.StoryRepository;
@@ -17,18 +19,23 @@ public class AppConfig {
   @Profile("dev")
   CommandLineRunner runner(StoryRepository repo, UserRepository userRepo) {
     return args -> {
-      User user = new User();
-      user.setImage("fakeimg.png");
-      user.setDisplayName("username");
-      userRepo.save(user);
+      for (int i = 0; i < 10; i++) {
 
-      Story story = new Story();
-      story.setTitle("first");
-      story.setBody("This is the body text");
-      story.setPublicVisible(false);
-      story.setUser(user);
-      repo.save(story);
+        Faker faker = new Faker();
 
+        User user = new User();
+        user.setImage(faker.avatar().image());
+        user.setDisplayName(faker.name().username());
+        userRepo.save(user);
+
+        Story story = new Story();
+        story.setTitle(faker.book().title());
+        story.setBody(faker.lorem().paragraph());
+        story.setPublicVisible(false);
+        story.setUser(user);
+        repo.save(story);
+
+      }
     };
   }
 }
