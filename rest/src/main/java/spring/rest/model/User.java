@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +31,8 @@ public class User {
   private String image;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<Story> story;
+  @JsonManagedReference
+  private List<Story> stories;
 
   @CreatedDate
   @Column(nullable = false, updatable = false)
@@ -70,12 +73,12 @@ public class User {
     this.createdAt = createdAt;
   }
 
-  public List<Story> getStory() {
-    return story;
+  public List<Story> getStories() {
+    return stories;
   }
 
-  public void setStory(List<Story> story) {
-    this.story = story;
+  public void setStories(List<Story> story) {
+    this.stories = story;
   }
 
 }

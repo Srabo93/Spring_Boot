@@ -1,2 +1,2 @@
-- [ ] Use DTO Pattern to make precise Rest Responses
-- [ ] Maybe include custom Queries
+- [x] Use DTO Pattern to make precise Rest Responses
+- [ ] Exception handling

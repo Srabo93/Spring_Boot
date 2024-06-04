@@ -32,7 +32,7 @@ public class AppConfig {
           Story story = new Story();
           story.setTitle(faker.book().title());
           story.setBody(faker.lorem().paragraph());
-          story.setPublicVisible(false);
+          story.setPublicVisible(faker.random().nextBoolean());
           story.setUser(user);
           repo.save(story);
         }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import spring.rest.model.Story;
 import spring.rest.model.User;
 import spring.rest.service.UserService;
 
