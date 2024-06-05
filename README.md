@@ -1,3 +1,3 @@
 # Spring Boot
 
-Exploring Bootspring bit by bit
+Exploring Spring Boot bit by bit
