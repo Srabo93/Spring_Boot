@@ -1,5 +1,8 @@
 package spring.rest.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import spring.rest.dto.StoryDto;
@@ -11,7 +14,7 @@ import spring.rest.model.User;
 @Service
 public class StoryMapper {
 
-  public StoryResponseDto toStoryResponse(Story story) {
+  public StoryResponseDto toStoryResponseDto(Story story) {
 
     return new StoryResponseDto(
         story.getTitle(),
@@ -20,6 +23,12 @@ public class StoryMapper {
         story.getCreatedAt(),
         (new UserDto(story.getUser().getId(), story.getUser().getDisplayName(), story.getUser().getImage(),
             story.getUser().getCreatedAt())));
+  }
+
+  public List<StoryDto> toStoryList(List<Story> stories) {
+
+    return stories.stream().map(story -> new StoryDto(story.getTitle(), story.getBody(), story.isPublicVisible(),
+        story.getCreatedAt(), story.getUser().getId())).collect(Collectors.toList());
   }
 
   public Story toStory(StoryDto dto) {

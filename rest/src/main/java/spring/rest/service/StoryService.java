@@ -23,19 +23,20 @@ public class StoryService {
   }
 
   public List<StoryResponseDto> findAllStories() {
-    return storyRepo.findAll().stream().map(story -> storyMapper.toStoryResponse(story)).collect(Collectors.toList());
+    return storyRepo.findAll().stream().map(story -> storyMapper.toStoryResponseDto(story))
+        .collect(Collectors.toList());
   }
 
   public List<StoryResponseDto> findAllPublicStories() {
     return storyRepo.findAll().stream().filter(story -> story.isPublicVisible())
-        .map(story -> storyMapper.toStoryResponse(story)).collect(Collectors.toList());
+        .map(story -> storyMapper.toStoryResponseDto(story)).collect(Collectors.toList());
   }
 
   public StoryResponseDto findStoryById(Long id) {
     var story = storyRepo.findById(id);
 
     if (story.isPresent()) {
-      return storyMapper.toStoryResponse(story.get());
+      return storyMapper.toStoryResponseDto(story.get());
     }
 
     return null;
@@ -45,7 +46,7 @@ public class StoryService {
     var story = storyMapper.toStory(dto);
     var savedStory = storyRepo.save(story);
 
-    return storyMapper.toStoryResponse(savedStory);
+    return storyMapper.toStoryResponseDto(savedStory);
   }
 
 }

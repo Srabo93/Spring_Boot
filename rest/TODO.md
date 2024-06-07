@@ -1,2 +1,4 @@
 - [x] Use DTO Pattern to make precise Rest Responses
+- [x] /users/{userId}/stories implement @Transactional
+- [] Rework the DTO to <Entity>dto and <Entity>ResponseDto, use @JacksonInclude(JsonInclude.Include.NON_NULL) Annotation to omit Optional properties
 - [ ] Exception handling
