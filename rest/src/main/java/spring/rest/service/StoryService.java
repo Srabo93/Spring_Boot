@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import spring.rest.dto.StoryDto;
+import spring.rest.dto.StoryCreateDto;
 import spring.rest.dto.StoryResponseDto;
+import spring.rest.dto.StoryUpdateDto;
 import spring.rest.mapper.StoryMapper;
 import spring.rest.repository.StoryRepository;
 
@@ -42,11 +43,15 @@ public class StoryService {
     return null;
   }
 
-  public StoryResponseDto createStory(@RequestBody StoryDto dto) {
+  public StoryResponseDto createStory(@RequestBody StoryCreateDto dto) {
     var story = storyMapper.toStory(dto);
     var savedStory = storyRepo.save(story);
 
     return storyMapper.toStoryResponseDto(savedStory);
+  }
+
+  public StoryResponseDto replaceStoryById(StoryUpdateDto dto) {
+    var story = storyMapper.toStory(dto);
   }
 
 }

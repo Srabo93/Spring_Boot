@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import spring.rest.dto.StoryDto;
+import spring.rest.dto.StoryCreateDto;
 import spring.rest.dto.StoryResponseDto;
+import spring.rest.dto.StoryUpdateDto;
 import spring.rest.mapper.StoryMapper;
 import spring.rest.service.StoryService;
 
@@ -31,7 +33,7 @@ public class StoryController {
   }
 
   @PostMapping()
-  public StoryResponseDto createStory(@RequestBody StoryDto dto) {
+  public StoryResponseDto createStory(@RequestBody StoryCreateDto dto) {
 
     return storyService.createStory(dto);
   }
@@ -46,6 +48,12 @@ public class StoryController {
   public StoryResponseDto findStoryById(@PathVariable Long id) {
 
     return storyService.findStoryById(id);
+  }
+
+  @PutMapping("/{id}")
+  public StoryResponseDto replaceStoryById(@RequestBody StoryUpdateDto dto) {
+
+    return storyService.replaceStoryById(dto);
   }
 
 }
