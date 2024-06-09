@@ -17,6 +17,7 @@ public class StoryMapper {
   public StoryResponseDto toStoryResponseDto(Story story) {
 
     return new StoryResponseDto(
+        story.getId(),
         story.getTitle(),
         story.getBody(),
         story.isPublicVisible(),
@@ -25,10 +26,23 @@ public class StoryMapper {
             story.getUser().getCreatedAt())));
   }
 
-  public List<StoryDto> toStoryList(List<Story> stories) {
+  public List<StoryResponseDto> toStoryDtoList(List<Story> stories) {
 
-    return stories.stream().map(story -> new StoryDto(story.getTitle(), story.getBody(), story.isPublicVisible(),
-        story.getCreatedAt(), story.getUser().getId())).collect(Collectors.toList());
+    if (stories == null) {
+      return null;
+    }
+    return stories.stream()
+        .map(story -> new StoryResponseDto(
+            story.getId(),
+            story.getTitle(),
+            story.getBody(),
+            story.isPublicVisible(),
+            story.getCreatedAt(),
+            new UserDto(story.getUser().getId(),
+                story.getUser().getDisplayName(), story.getUser().getImage(),
+                story.getUser().getCreatedAt())))
+        .collect(Collectors.toList());
+
   }
 
   public Story toStory(StoryDto dto) {

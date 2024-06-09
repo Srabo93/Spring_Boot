@@ -7,13 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import spring.rest.dto.UserDto;
-import spring.rest.dto.UserStoriesDto;
-import spring.rest.model.User;
+import spring.rest.dto.UserResponseDto;
 import spring.rest.service.UserService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
   private final UserService userService;
@@ -22,21 +20,21 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping("/users")
-  public List<User> getAllUsers() {
+  @GetMapping()
+  public List<UserResponseDto> getAllUsers() {
 
     return userService.getAllUsers();
   }
 
-  @GetMapping("/users/{userId}")
-  public UserDto getUserById(@PathVariable Long userId) {
+  @GetMapping("/{userId}")
+  public UserResponseDto getUserById(@PathVariable Long userId) {
 
     return userService.getUserById(userId);
   }
 
-  @GetMapping("/users/{userId}/stories")
-  public UserStoriesDto getUserStoriesById(@PathVariable Long userId) {
+  @GetMapping("/{userId}/stories")
+  public UserResponseDto getAllUserStories(@PathVariable Long userId) {
 
-    return userService.getUserStoriesByUserId(userId);
+    return userService.getAllUserStoriesById(userId);
   }
 }

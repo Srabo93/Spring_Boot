@@ -15,7 +15,7 @@ import spring.rest.mapper.StoryMapper;
 import spring.rest.service.StoryService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/stories")
 public class StoryController {
 
   final private StoryService storyService;
@@ -24,25 +24,25 @@ public class StoryController {
     this.storyService = storyService;
   }
 
-  @GetMapping("/stories")
+  @GetMapping()
   public List<StoryResponseDto> findAllStories() {
 
     return storyService.findAllStories();
   }
 
-  @PostMapping("/stories")
+  @PostMapping()
   public StoryResponseDto createStory(@RequestBody StoryDto dto) {
 
     return storyService.createStory(dto);
   }
 
-  @GetMapping("/stories/public")
+  @GetMapping("/public")
   public List<StoryResponseDto> findAllPublicStories() {
 
     return storyService.findAllPublicStories();
   }
 
-  @GetMapping("/stories/{id}")
+  @GetMapping("/{id}")
   public StoryResponseDto findStoryById(@PathVariable Long id) {
 
     return storyService.findStoryById(id);

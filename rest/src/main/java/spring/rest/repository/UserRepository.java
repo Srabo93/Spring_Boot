@@ -1,5 +1,7 @@
 package spring.rest.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,5 +12,8 @@ import spring.rest.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
   @Query("SELECT u FROM User u JOIN FETCH u.stories s WHERE u.id = :userId AND s.publicVisible = true")
-  User findByIdandPublicVisibleStories(@Param("userId") Long userId);
+  Optional<User> findByIdAllPublicVisibleStories(@Param("userId") Long userId);
+
+  @Query("SELECT u FROM User u JOIN FETCH u.stories s WHERE u.id = :userId")
+  Optional<User> findByIdAllStories(@Param("userId") Long userId);
 }

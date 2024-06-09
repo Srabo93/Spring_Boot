@@ -1,9 +1,12 @@
 package spring.rest.mapper;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import spring.rest.dto.UserDto;
-import spring.rest.dto.UserStoriesDto;
+import spring.rest.dto.UserResponseDto;
+import spring.rest.model.Story;
 import spring.rest.model.User;
 
 @Service
@@ -15,13 +18,21 @@ public class UserMapper {
   }
 
   public UserDto toUserDto(User user) {
+    if (user == null) {
+      return null;
+    }
     return new UserDto(user.getId(), user.getDisplayName(), user.getImage(), user.getCreatedAt());
   }
 
-  public UserStoriesDto toUserStoriesDto(User user) {
+  public UserResponseDto toUserResponseDto(User user, List<Story> stories) {
+
+    if (user == null) {
+      return null;
+    }
+
     var userDto = toUserDto(user);
-    var storyDtos = storyMapper.toStoryList(user.getStories());
-    return new UserStoriesDto(userDto, storyDtos);
+    var storyDtos = storyMapper.toStoryDtoList(stories);
+    return new UserResponseDto(userDto, storyDtos);
   }
 
   public User toUser(UserDto dto) {

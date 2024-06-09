@@ -1,14 +1,13 @@
 package spring.rest.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import spring.rest.dto.UserDto;
-import spring.rest.dto.UserStoriesDto;
+import spring.rest.dto.UserResponseDto;
 import spring.rest.mapper.UserMapper;
-import spring.rest.model.User;
 import spring.rest.repository.UserRepository;
 
 @Service
@@ -22,24 +21,28 @@ public class UserService {
     this.userMapper = userMapper;
   }
 
-  public List<User> getAllUsers() {
-    return userRepository.findAll();
+  public List<UserResponseDto> getAllUsers() {
+    var users = userRepository.findAll();
+
+    return users.stream().map(user -> userMapper.toUserResponseDto(user, null)).collect(Collectors.toList());
   }
 
-  public UserDto getUserById(Long id) {
+  public UserResponseDto getUserById(Long id) {
     var user = userRepository.findById(id);
 
     if (user.isPresent()) {
-      return userMapper.toUserDto(user.get());
+      return userMapper.toUserResponseDto(user.get(), null);
     }
     return null;
   }
 
   @Transactional
-  public UserStoriesDto getUserStoriesByUserId(Long id) {
+  public UserResponseDto getAllUserStoriesById(Long id) {
+    var user = userRepository.findByIdAllStories(id);
 
-    var user = userRepository.findByIdandPublicVisibleStories(id);
-
-    return userMapper.toUserStoriesDto(user);
+    if (user.isPresent()) {
+      return userMapper.toUserResponseDto(user.get(), user.get().getStories());
+    }
+    return null;
   }
 }
