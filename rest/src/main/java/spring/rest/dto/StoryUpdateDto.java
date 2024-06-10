@@ -1,8 +1,9 @@
 package spring.rest.dto;
 
 public record StoryUpdateDto(
-    String title,
-    String body,
-    boolean publicVisible,
-    Long userId) {
+        Long id,
+        String title,
+        String body,
+        boolean publicVisible,
+        Long userId) implements StoryDtoI {
 }

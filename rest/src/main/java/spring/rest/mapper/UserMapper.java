@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import spring.rest.dto.UserDto;
+import spring.rest.dto.UserDtoI;
 import spring.rest.dto.UserResponseDto;
 import spring.rest.model.Story;
 import spring.rest.model.User;
@@ -35,16 +36,19 @@ public class UserMapper {
     return new UserResponseDto(userDto, storyDtos);
   }
 
-  public User toUser(UserDto dto) {
+  public User toUser(UserDtoI dto) {
+
+    if (dto.id() == null) {
+      var user = new User();
+      user.setDisplayName(dto.displayName());
+      return user;
+    }
+
     var user = new User();
-    // user.setId(dto.userId());
-    //
-    // var story = new Story();
-    // story.setTitle(dto.title());
-    // story.setBody(dto.body());
-    // story.setPublicVisible(dto.publicVisible());
-    // story.setCreatedAt(dto.createdAt());
-    // story.setUser(user);
+    user.setId(dto.id());
+    user.setDisplayName(dto.displayName());
+    user.setImage(dto.image());
+    user.setCreatedAt(dto.createdAt());
 
     return user;
   }

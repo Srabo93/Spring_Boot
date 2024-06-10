@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import spring.rest.dto.StoryCreateDto;
+import spring.rest.dto.StoryDtoI;
 import spring.rest.dto.StoryResponseDto;
 import spring.rest.dto.UserDto;
 import spring.rest.model.Story;
@@ -39,21 +39,25 @@ public class StoryMapper {
             story.isPublicVisible(),
             story.getCreatedAt(),
             new UserDto(story.getUser().getId(),
-                story.getUser().getDisplayName(), story.getUser().getImage(),
+                story.getUser().getDisplayName(),
+                story.getUser().getImage(),
                 story.getUser().getCreatedAt())))
         .collect(Collectors.toList());
 
   }
 
-  public Story toStory(StoryCreateDto dto) {
-    var user = new User();
-    user.setId(dto.userId());
+  public Story toStory(StoryDtoI dto) {
 
     var story = new Story();
     story.setTitle(dto.title());
     story.setBody(dto.body());
     story.setPublicVisible(dto.publicVisible());
-    story.setUser(user);
+
+    if (dto.userId() != null) {
+      var user = new User();
+      user.setId(dto.userId());
+      story.setUser(user);
+    }
 
     return story;
   }
