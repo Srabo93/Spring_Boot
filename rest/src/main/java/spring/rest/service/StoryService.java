@@ -14,6 +14,7 @@ import spring.rest.dto.StoryCreateDto;
 import spring.rest.dto.StoryResponseDto;
 import spring.rest.dto.StoryUpdateDto;
 import spring.rest.dto.UserDto;
+import spring.rest.exceptions.ResourceNotFoundException;
 import spring.rest.mapper.StoryMapper;
 import spring.rest.repository.StoryRepository;
 
@@ -39,13 +40,11 @@ public class StoryService {
   }
 
   public StoryResponseDto findStoryById(Long id) {
-    var story = storyRepo.findById(id);
+    var story = storyRepo.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + id));
 
-    if (story.isPresent()) {
-      return storyMapper.toStoryResponseDto(story.get());
-    }
+    return storyMapper.toStoryResponseDto(story);
 
-    return null;
   }
 
   public StoryResponseDto createStory(@RequestBody StoryCreateDto dto) {
