@@ -1,9 +1,9 @@
 package spring.rest.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import spring.rest.dto.UserCreateDto;
 import spring.rest.dto.UserResponseDto;
 import spring.rest.dto.UserUpdateDto;
@@ -36,7 +37,7 @@ public class UserController {
   }
 
   @PostMapping()
-  public UserResponseDto createUser(@RequestBody UserCreateDto dto) {
+  public UserResponseDto createUser(@Valid @RequestBody UserCreateDto dto) {
 
     return userService.createUser(dto);
   }
@@ -48,17 +49,18 @@ public class UserController {
   }
 
   @PutMapping("/{userId}")
-  public UserResponseDto replaceUserById(@RequestBody UserUpdateDto dto) {
+  public UserResponseDto replaceUserById(@Valid @RequestBody UserUpdateDto dto) {
     return userService.replaceUserById(dto);
   }
 
   @DeleteMapping("/{userId}")
-  public Map<String, Object> deleteUserById(@PathVariable Long userId) {
+  public ResponseEntity<?> deleteUserById(@PathVariable Long userId) {
     return userService.deleteUserById(userId);
   }
 
   @GetMapping("/{userId}/stories")
-  public UserResponseDto getAllUserStories(@PathVariable Long userId, @RequestParam Optional<Boolean> publicVisible) {
+  public UserResponseDto getAllUserStories(@PathVariable Long userId,
+      @Valid @RequestParam Optional<Boolean> publicVisible) {
 
     return userService.getAllUserStoriesById(userId, publicVisible);
   }

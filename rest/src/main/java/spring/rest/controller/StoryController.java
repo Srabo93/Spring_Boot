@@ -1,8 +1,8 @@
 package spring.rest.controller;
 
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import spring.rest.dto.StoryCreateDto;
 import spring.rest.dto.StoryResponseDto;
 import spring.rest.dto.StoryUpdateDto;
@@ -35,7 +36,7 @@ public class StoryController {
   }
 
   @PostMapping()
-  public StoryResponseDto createStory(@RequestBody StoryCreateDto dto) {
+  public StoryResponseDto createStory(@Valid @RequestBody StoryCreateDto dto) {
 
     return storyService.createStory(dto);
   }
@@ -53,13 +54,13 @@ public class StoryController {
   }
 
   @PutMapping("/{id}")
-  public StoryResponseDto replaceStoryById(@RequestBody StoryUpdateDto dto) {
+  public StoryResponseDto replaceStoryById(@Valid @RequestBody StoryUpdateDto dto) {
 
     return storyService.replaceStoryById(dto);
   }
 
   @DeleteMapping("/{id}")
-  public Map<String, Object> patchStoryById(@PathVariable Long id) {
+  public ResponseEntity<?> patchStoryById(@PathVariable Long id) {
 
     return storyService.deleteStoryById(id);
   }

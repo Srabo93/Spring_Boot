@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -79,7 +81,7 @@ public class StoryService {
 
   }
 
-  public Map<String, Object> deleteStoryById(Long id) {
+  public ResponseEntity<?> deleteStoryById(Long id) {
 
     storyRepo.deleteById(id);
 
@@ -88,7 +90,7 @@ public class StoryService {
     response.put("message", "Story deleted successfully");
     response.put("id", id);
 
-    return response;
+    return new ResponseEntity<>(response, HttpStatus.OK);
 
   }
 

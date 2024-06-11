@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -78,7 +80,7 @@ public class UserService {
     return null;
   }
 
-  public Map<String, Object> deleteUserById(Long id) {
+  public ResponseEntity<?> deleteUserById(Long id) {
 
     userRepository.deleteById(id);
 
@@ -87,6 +89,6 @@ public class UserService {
     response.put("message", "User deleted successfully");
     response.put("id", id);
 
-    return response;
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }
