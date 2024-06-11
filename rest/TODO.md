@@ -2,6 +2,6 @@
 - [x] /users/{userId}/stories implement @Transactional
 - [x] Rework the DTO to <Entity>dto and <Entity>ResponseDto, use @JacksonInclude(JsonInclude.Include.NON_NULL) Annotation to omit Optional properties
 - [x] Implement CRUD to entities extract repetetive Dto Props into Interface to make Mapper functions more usable
-- [ ] Validation
-- [ ] Exception handling
+- [x] Validation
+- [x] Exception handling
 - [ ] Add Tests
