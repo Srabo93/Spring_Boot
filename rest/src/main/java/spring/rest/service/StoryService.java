@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import jakarta.validation.Valid;
 import spring.rest.dto.StoryCreateDto;
 import spring.rest.dto.StoryResponseDto;
 import spring.rest.dto.StoryUpdateDto;
@@ -44,11 +45,11 @@ public class StoryService {
         .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + id));
 
     return storyMapper.toStoryResponseDto(story);
-
   }
 
-  public StoryResponseDto createStory(@RequestBody StoryCreateDto dto) {
+  public StoryResponseDto createStory(@Valid @RequestBody StoryCreateDto dto) {
     var story = storyMapper.toStory(dto);
+
     var savedStory = storyRepo.save(story);
 
     return storyMapper.toStoryResponseDto(savedStory);
@@ -58,25 +59,25 @@ public class StoryService {
 
     var findStoryById = storyRepo.findById(dto.id());
 
-    if (findStoryById.isPresent()) {
-      var story = findStoryById.get();
-      story.setTitle(dto.title());
-      story.setBody(dto.body());
-      story.setPublicVisible(dto.publicVisible());
-      storyRepo.save(story);
-
-      return new StoryResponseDto(story.getId(),
-          story.getTitle(),
-          story.getBody(),
-          story.isPublicVisible(),
-          story.getCreatedAt(),
-          new UserDto(story.getUser().getId(),
-              story.getUser().getDisplayName(),
-              story.getUser().getImage(),
-              story.getUser().getCreatedAt()));
+    if (findStoryById.isEmpty()) {
+      throw new ResourceNotFoundException("Story has not been found");
     }
 
-    return null;
+    var story = findStoryById.get();
+    story.setTitle(dto.title());
+    story.setBody(dto.body());
+    story.setPublicVisible(dto.publicVisible());
+    storyRepo.save(story);
+
+    return new StoryResponseDto(story.getId(),
+        story.getTitle(),
+        story.getBody(),
+        story.isPublicVisible(),
+        story.getCreatedAt(),
+        new UserDto(story.getUser().getId(),
+            story.getUser().getDisplayName(),
+            story.getUser().getImage(),
+            story.getUser().getCreatedAt()));
 
   }
 

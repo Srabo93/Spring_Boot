@@ -28,9 +28,9 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ResourceExistsException.class)
   public ResponseEntity<?> handleBadRequestException(ResourceExistsException e, WebRequest request) {
 
-    ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.IM_USED);
+    ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.CONFLICT);
 
-    return new ResponseEntity<>(errorResponse, HttpStatus.IM_USED);
+    return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(InternalServerErrorException.class)

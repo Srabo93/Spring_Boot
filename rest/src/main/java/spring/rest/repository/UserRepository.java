@@ -19,4 +19,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findByIdAllStories(@Param("userId") Long userId,
       @Param("publicVisible") Optional<Boolean> publicVisible);
 
+  Optional<User> findByDisplayName(String displayName);
 }

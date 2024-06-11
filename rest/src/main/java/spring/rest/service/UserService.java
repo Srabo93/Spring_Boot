@@ -11,9 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import spring.rest.dto.UserCreateDto;
 import spring.rest.dto.UserResponseDto;
 import spring.rest.dto.UserUpdateDto;
+import spring.rest.exceptions.InternalServerErrorException;
+import spring.rest.exceptions.ResourceExistsException;
+import spring.rest.exceptions.ResourceNotFoundException;
 import spring.rest.mapper.UserMapper;
 import spring.rest.repository.UserRepository;
 
@@ -31,11 +35,19 @@ public class UserService {
   public List<UserResponseDto> getAllUsers() {
     var users = userRepository.findAll();
 
+    if (users == null) {
+      throw new InternalServerErrorException("No Users Found");
+    }
+
     return users.stream().map(user -> userMapper.toUserResponseDto(user, null)).collect(Collectors.toList());
   }
 
-  public UserResponseDto createUser(UserCreateDto dto) {
+  public UserResponseDto createUser(@Valid UserCreateDto dto) {
     var user = userMapper.toUser(dto);
+
+    userRepository.findByDisplayName(user.getDisplayName()).ifPresent(existingUser -> {
+      throw new ResourceExistsException(existingUser.getDisplayName() + " User is already used");
+    });
 
     userRepository.save(user);
 
@@ -43,21 +55,18 @@ public class UserService {
   }
 
   public UserResponseDto getUserById(Long id) {
-    var user = userRepository.findById(id);
+    var user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-    if (user.isPresent()) {
-      return userMapper.toUserResponseDto(user.get(), null);
-    }
-    return null;
+    return userMapper.toUserResponseDto(user, null);
   }
 
-  public UserResponseDto replaceUserById(UserUpdateDto dto) {
+  public UserResponseDto replaceUserById(@Valid UserUpdateDto dto) {
 
     var findUser = userRepository.findById(dto.id());
 
     if (findUser.isPresent()) {
       var user = findUser.get();
-
       user.setId(dto.id());
       user.setCreatedAt(dto.createdAt());
       user.setImage(dto.image());
@@ -66,13 +75,12 @@ public class UserService {
       return userMapper.toUserResponseDto(user, null);
     }
 
-    return null;
+    throw new ResourceNotFoundException("No User Found");
   }
 
   @Transactional
   public UserResponseDto getAllUserStoriesById(Long id, Optional<Boolean> publicVisible) {
     var user = userRepository.findByIdAllStories(id, publicVisible);
-    System.out.println(publicVisible);
 
     if (user.isPresent()) {
       return userMapper.toUserResponseDto(user.get(), user.get().getStories());
