@@ -11,6 +11,9 @@ public record StoryCreateDto(
         @NotEmpty(message = "The Body cant be empty")
         @NotNull(message = "The Body can not be null")
         String body,
+        @NotNull(message = "Public Visibility cant be null")
         boolean publicVisible,
-        Long userId) implements StoryDtoI {
+        @NotNull(message = "The user id cant be null")
+        Long userId
+) implements StoryDtoI {
 }
