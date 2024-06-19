@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -27,18 +26,17 @@ public class StoryCreatedDtoTest {
   private static ObjectMapper mapper;
   private static Validator validator;
 
-  static Stream<Arguments> provideCreatedStoryDtos() {
-
-    return Stream.of(
-        Arguments.of(new StoryCreateDto("Title1", "Body1", true, 1L)),
-        Arguments.of(new StoryCreateDto("Title2", "Body2", false, 2L)));
-  }
-
   @BeforeAll
   public static void setUp() {
     mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     validator = factory.getValidator();
+  }
+
+  static Stream<Arguments> provideCreatedStoryDtos() {
+    return Stream.of(
+        Arguments.of(new StoryCreateDto("Title1", "Body1", true, 1L)),
+        Arguments.of(new StoryCreateDto("Title2", "Body2", false, 2L)));
   }
 
   @ParameterizedTest
@@ -50,15 +48,13 @@ public class StoryCreatedDtoTest {
     assertTrue(json.contains("\"body\":\"" + storyDto.body() + "\""));
     assertTrue(json.contains("\"publicVisible\":" + storyDto.publicVisible()));
     assertTrue(json.contains("\"userId\":" + storyDto.userId()));
-
   }
 
   @ParameterizedTest
   @MethodSource("provideCreatedStoryDtos")
-  public void testDeSerialization(StoryCreateDto expectedStoryDto) throws JsonProcessingException {
-
+  public void testDeserialization(StoryCreateDto expectedStoryDto) throws JsonProcessingException {
     String json = mapper.writeValueAsString(expectedStoryDto);
-    StoryDto actualStoryDto = mapper.readValue(json, StoryDto.class);
+    StoryCreateDto actualStoryDto = mapper.readValue(json, StoryCreateDto.class);
 
     assertEquals(expectedStoryDto.title(), actualStoryDto.title());
     assertEquals(expectedStoryDto.body(), actualStoryDto.body());
@@ -72,15 +68,47 @@ public class StoryCreatedDtoTest {
 
     Set<ConstraintViolation<StoryCreateDto>> violations = validator.validate(dto);
 
-    boolean foundException = false;
+    assertTrue(violations.stream().anyMatch(v -> "The Title can not be null".equals(v.getMessage())),
+        "Expected exception for Title not null");
+  }
 
-    for (var violation : violations) {
-      if ("The Title can not be null".equals(violation.getMessage())) {
-        foundException = true;
-      }
-    }
+  @Test
+  public void testTitleNotEmpty() {
+    StoryCreateDto dto = new StoryCreateDto("", "Body1", true, 1L);
 
-    assertTrue(foundException, "Exception Title not null found");
+    Set<ConstraintViolation<StoryCreateDto>> violations = validator.validate(dto);
 
+    assertTrue(violations.stream().anyMatch(v -> "The Title cant be empty".equals(v.getMessage())),
+        "Expected exception for Title not empty");
+  }
+
+  @Test
+  public void testBodyNotNull() {
+    StoryCreateDto dto = new StoryCreateDto("Title", null, true, 1L);
+
+    Set<ConstraintViolation<StoryCreateDto>> violations = validator.validate(dto);
+
+    assertTrue(violations.stream().anyMatch(v -> "The Body can not be null".equals(v.getMessage())),
+        "Expected exception for Body not null");
+  }
+
+  @Test
+  public void testBodyNotEmpty() {
+    StoryCreateDto dto = new StoryCreateDto("Title", "", true, 1L);
+
+    Set<ConstraintViolation<StoryCreateDto>> violations = validator.validate(dto);
+
+    assertTrue(violations.stream().anyMatch(v -> "The Body cant be empty".equals(v.getMessage())),
+        "Expected exception for Body not empty");
+  }
+
+  @Test
+  public void testUserIdNotNull() {
+    StoryCreateDto dto = new StoryCreateDto("Title", "Body", true, null);
+
+    Set<ConstraintViolation<StoryCreateDto>> violations = validator.validate(dto);
+
+    assertTrue(violations.stream().anyMatch(v -> "The user id cant be null".equals(v.getMessage())),
+        "Expected exception for userId not empty");
   }
 }
