@@ -32,7 +32,7 @@ public class UserMapper {
     }
 
     var userDto = toUserDto(user);
-    var storyDtos = storyMapper.toStoryDtoList(stories);
+    var storyDtos = storyMapper.storiesToStoryResponseDtos(stories);
     return new UserResponseDto(userDto, storyDtos);
   }
 

@@ -31,28 +31,28 @@ public class StoryService {
   }
 
   public List<StoryResponseDto> findAllStories() {
-    return storyRepo.findAll().stream().map(story -> storyMapper.toStoryResponseDto(story))
+    return storyRepo.findAll().stream().map(story -> storyMapper.storyToStoryResponseDto(story))
         .collect(Collectors.toList());
   }
 
   public List<StoryResponseDto> findAllPublicStories() {
     return storyRepo.findAll().stream().filter(story -> story.isPublicVisible())
-        .map(story -> storyMapper.toStoryResponseDto(story)).collect(Collectors.toList());
+        .map(story -> storyMapper.storyToStoryResponseDto(story)).collect(Collectors.toList());
   }
 
   public StoryResponseDto findStoryById(Long id) {
     var story = storyRepo.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + id));
 
-    return storyMapper.toStoryResponseDto(story);
+    return storyMapper.storyToStoryResponseDto(story);
   }
 
   public StoryResponseDto createStory(@Valid @RequestBody StoryCreateDto dto) {
-    var story = storyMapper.toStory(dto);
+    var story = storyMapper.storyDtoToStory(dto);
 
     var savedStory = storyRepo.save(story);
 
-    return storyMapper.toStoryResponseDto(savedStory);
+    return storyMapper.storyToStoryResponseDto(savedStory);
   }
 
   public StoryResponseDto replaceStoryById(StoryUpdateDto dto) {

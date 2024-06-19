@@ -4,4 +4,5 @@
 - [x] Implement CRUD to entities extract repetetive Dto Props into Interface to make Mapper functions more usable
 - [x] Validation
 - [x] Exception handling
+- [ ] Fix the Story Mapper for singlestory and deleteStory not working
 - [ ] Add Tests

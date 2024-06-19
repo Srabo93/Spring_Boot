@@ -1,65 +1,27 @@
 package spring.rest.mapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-import spring.rest.dto.StoryDtoI;
+import spring.rest.dto.StoryCreateDto;
+import spring.rest.dto.StoryDto;
 import spring.rest.dto.StoryResponseDto;
-import spring.rest.dto.UserDto;
+import spring.rest.dto.StoryUpdateDto;
 import spring.rest.model.Story;
-import spring.rest.model.User;
 
-@Service
-public class StoryMapper {
+@Mapper
+public interface StoryMapper {
+  StoryMapper INSTANCE = Mappers.getMapper(StoryMapper.class);
 
-  public StoryResponseDto toStoryResponseDto(Story story) {
+  StoryDto storyToStoryDto(Story story, Long userId);
 
-    return new StoryResponseDto(
-        story.getId(),
-        story.getTitle(),
-        story.getBody(),
-        story.isPublicVisible(),
-        story.getCreatedAt(),
-        (new UserDto(story.getUser().getId(), story.getUser().getDisplayName(), story.getUser().getImage(),
-            story.getUser().getCreatedAt())));
-  }
+  StoryResponseDto storyToStoryResponseDto(Story story);
 
-  public List<StoryResponseDto> toStoryDtoList(List<Story> stories) {
+  List<StoryResponseDto> storiesToStoryResponseDtos(List<Story> stories);
 
-    if (stories == null) {
-      return null;
-    }
-    return stories.stream()
-        .map(story -> new StoryResponseDto(
-            story.getId(),
-            story.getTitle(),
-            story.getBody(),
-            story.isPublicVisible(),
-            story.getCreatedAt(),
-            new UserDto(story.getUser().getId(),
-                story.getUser().getDisplayName(),
-                story.getUser().getImage(),
-                story.getUser().getCreatedAt())))
-        .collect(Collectors.toList());
+  StoryUpdateDto storyToStoryUpdateDto(Story story, Long userId);
 
-  }
-
-  public Story toStory(StoryDtoI dto) {
-
-    var story = new Story();
-    story.setTitle(dto.title());
-    story.setBody(dto.body());
-    story.setPublicVisible(dto.publicVisible());
-
-    if (dto.userId() != null) {
-      var user = new User();
-      user.setId(dto.userId());
-      story.setUser(user);
-    }
-
-    return story;
-  }
-
+  Story storyDtoToStory(StoryCreateDto dto);
 }
