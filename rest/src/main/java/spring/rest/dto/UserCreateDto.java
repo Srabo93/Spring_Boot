@@ -1,6 +1,6 @@
 package spring.rest.dto;
 
-import java.sql.Date;
+import java.util.Date;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

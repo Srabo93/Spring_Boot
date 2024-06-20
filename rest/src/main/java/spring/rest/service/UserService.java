@@ -39,11 +39,12 @@ public class UserService {
       throw new InternalServerErrorException("No Users Found");
     }
 
-    return users.stream().map(user -> userMapper.toUserResponseDto(user, null)).collect(Collectors.toList());
+    return users.stream().map(user -> userMapper.userToUserResponseDto(userMapper.userToUserDto(user), null))
+        .collect(Collectors.toList());
   }
 
   public UserResponseDto createUser(@Valid UserCreateDto dto) {
-    var user = userMapper.toUser(dto);
+    var user = userMapper.userCreatedDtoToUser(dto);
 
     userRepository.findByDisplayName(user.getDisplayName()).ifPresent(existingUser -> {
       throw new ResourceExistsException(existingUser.getDisplayName() + " User is already used");
@@ -51,14 +52,14 @@ public class UserService {
 
     userRepository.save(user);
 
-    return userMapper.toUserResponseDto(user, null);
+    return userMapper.userToUserResponseDto(userMapper.userToUserDto(user), null);
   }
 
   public UserResponseDto getUserById(Long id) {
     var user = userRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-    return userMapper.toUserResponseDto(user, null);
+    return userMapper.userToUserResponseDto(userMapper.userToUserDto(user), null);
   }
 
   public UserResponseDto replaceUserById(@Valid UserUpdateDto dto) {
@@ -72,7 +73,7 @@ public class UserService {
       user.setImage(dto.image());
       user.setDisplayName(dto.displayName());
 
-      return userMapper.toUserResponseDto(user, null);
+      return userMapper.userToUserResponseDto(userMapper.userToUserDto(user), null);
     }
 
     throw new ResourceNotFoundException("No User Found");
@@ -83,7 +84,7 @@ public class UserService {
     var user = userRepository.findByIdAllStories(id, publicVisible);
 
     if (user.isPresent()) {
-      return userMapper.toUserResponseDto(user.get(), user.get().getStories());
+      return userMapper.userToUserResponseDto(userMapper.userToUserDto(user.get()), user.get().getStories());
     }
     return null;
   }

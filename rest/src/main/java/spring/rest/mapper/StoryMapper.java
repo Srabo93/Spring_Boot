@@ -3,6 +3,7 @@ package spring.rest.mapper;
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import spring.rest.dto.StoryCreateDto;
@@ -23,5 +24,8 @@ public interface StoryMapper {
 
   StoryUpdateDto storyToStoryUpdateDto(Story story, Long userId);
 
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "user", ignore = true)
   Story storyDtoToStory(StoryCreateDto dto);
 }
