@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.validation.Valid;
 import spring.rest.dto.StoryCreateDto;
@@ -47,7 +46,7 @@ public class StoryService {
     return storyMapper.storyToStoryResponseDto(story);
   }
 
-  public StoryResponseDto createStory(@Valid @RequestBody StoryCreateDto dto) {
+  public StoryResponseDto createStory(@Valid StoryCreateDto dto) {
     var story = storyMapper.storyDtoToStory(dto);
 
     var savedStory = storyRepo.save(story);
