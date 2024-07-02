@@ -50,8 +50,31 @@ public class StoryServiceTest {
 
     List<StoryResponseDto> result = storyService.findAllStories();
 
-    assertEquals(storyResponseDtos.size(), result.size());
+    assertEquals(2, result.size());
     verify(storyRepo, times(1)).findAll();
+    verify(storyMapper, times(2)).storyToStoryResponseDto(any(Story.class));
+  }
+
+  @Test
+  public void testFindAllPublicStories() {
+    Story publicStory = new Story();
+    publicStory.setPublicVisible(true);
+    Story privateStory = new Story();
+    privateStory.setPublicVisible(false);
+
+    List<Story> stories = List.of(publicStory, privateStory);
+    when(storyRepo.findAll()).thenReturn(stories);
+
+    StoryResponseDto dto = new StoryResponseDto(1L, "Title", "Body", true, new Date(),
+        new UserDto(1L, "User", "image.jpg", new Date()));
+    when(storyMapper.storyToStoryResponseDto(any(Story.class))).thenReturn(dto);
+
+    List<StoryResponseDto> result = storyService.findAllPublicStories();
+
+    assertEquals(1, result.size());
+    verify(storyRepo, times(1)).findAll();
+    verify(storyMapper, times(1)).storyToStoryResponseDto(any(Story.class));
+
   }
 
 }
