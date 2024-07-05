@@ -18,10 +18,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "app_user")
 @EntityListeners(AuditingEntityListener.class)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
   @Id
@@ -38,48 +46,5 @@ public class User {
   @CreatedDate
   @Column(nullable = false, updatable = false)
   private Date createdAt;
-
-  public User() {
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
-
-  public String getImage() {
-    return image;
-  }
-
-  public void setImage(String image) {
-    this.image = image;
-  }
-
-  public Date getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public List<Story> getStories() {
-    return stories;
-  }
-
-  public void setStories(List<Story> story) {
-    this.stories = story;
-  }
 
 }
