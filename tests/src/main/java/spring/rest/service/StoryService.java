@@ -68,15 +68,7 @@ public class StoryService {
     story.setPublicVisible(dto.publicVisible());
     storyRepo.save(story);
 
-    return new StoryResponseDto(story.getId(),
-        story.getTitle(),
-        story.getBody(),
-        story.isPublicVisible(),
-        story.getCreatedAt(),
-        new UserDto(story.getUser().getId(),
-            story.getUser().getDisplayName(),
-            story.getUser().getImage(),
-            story.getUser().getCreatedAt()));
+    return storyMapper.storyToStoryResponseDto(story);
 
   }
 

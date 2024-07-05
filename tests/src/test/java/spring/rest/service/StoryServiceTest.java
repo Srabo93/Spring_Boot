@@ -3,8 +3,10 @@ package spring.rest.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -19,11 +21,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import spring.rest.dto.StoryCreateDto;
 import spring.rest.dto.StoryResponseDto;
+import spring.rest.dto.StoryUpdateDto;
 import spring.rest.dto.UserDto;
 import spring.rest.exceptions.ResourceNotFoundException;
 import spring.rest.mapper.StoryMapper;
 import spring.rest.model.Story;
+import spring.rest.model.User;
 import spring.rest.repository.StoryRepository;
 
 public class StoryServiceTest {
@@ -115,4 +120,95 @@ public class StoryServiceTest {
     verifyNoInteractions(storyMapper);
   }
 
+  @Test
+  void createStory_WithValidDto() {
+    Date fixedDate = new Date();
+
+    StoryCreateDto createDto = new StoryCreateDto("Title", "Body", true, 1L);
+
+    User user = User.builder()
+        .id(1L)
+        .displayName("name")
+        .image("/path/img")
+        .createdAt(fixedDate)
+        .build();
+
+    Story expectedStory = Story.builder()
+        .id(1L)
+        .title("Test")
+        .body("Body")
+        .publicVisible(true)
+        .user(user)
+        .createdAt(fixedDate)
+        .build();
+
+    StoryResponseDto expectedResponseDto = new StoryResponseDto(1L, "Title",
+        "Body", true, fixedDate,
+        new UserDto(1L, "name", "/path/img", fixedDate));
+
+    when(storyMapper.storyDtoToStory(createDto)).thenReturn(expectedStory);
+    when(storyRepo.save(any(Story.class))).thenReturn(expectedStory);
+    when(storyMapper.storyToStoryResponseDto(expectedStory)).thenReturn(expectedResponseDto);
+
+    StoryResponseDto result = storyService.createStory(createDto);
+
+    assertNotNull(result);
+    assertEquals(expectedResponseDto, result);
+
+    verify(storyMapper).storyDtoToStory(createDto);
+    verify(storyRepo).save(expectedStory);
+    verify(storyMapper).storyToStoryResponseDto(expectedStory);
+  }
+
+  @Test
+  void replaceStoryById_ExistingStory_ShouldUpdateAndReturnDto() {
+    long storyId = 1L;
+    StoryUpdateDto updateDto = new StoryUpdateDto(storyId, "Updated Title", "Updated Body", true, 1L);
+
+    User user = User.builder()
+        .id(1L)
+        .displayName("name")
+        .image("/path/img")
+        .createdAt(new Date())
+        .build();
+
+    Story existingStory = new Story(storyId, "Original Title", "Original Body", false, new Date(), user);
+    UserDto userDto = new UserDto(1L, "name", "/path/img", new Date());
+    StoryResponseDto updatedResponse = new StoryResponseDto(storyId, "Updated Title", "Updated Body", true, new Date(),
+        userDto);
+
+    when(storyRepo.findById(updateDto.id())).thenReturn(Optional.of(existingStory));
+    when(storyRepo.save(any(Story.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    when(storyMapper.storyToStoryResponseDto(any(Story.class))).thenReturn(updatedResponse);
+
+    StoryResponseDto result = storyService.replaceStoryById(updateDto);
+
+    assertNotNull(result);
+    assertEquals(updateDto.id(), result.id());
+    assertEquals("Updated Title", result.title());
+    assertEquals("Updated Body", result.body());
+    assertTrue(result.publicVisible());
+    assertEquals(existingStory.getCreatedAt(), result.createdAt());
+    assertEquals(user.getId(), result.user().id());
+    assertEquals(user.getDisplayName(), result.user().displayName());
+    assertEquals(user.getImage(), result.user().image());
+    assertEquals(user.getCreatedAt(), result.user().createdAt());
+
+    verify(storyRepo).findById(updateDto.id());
+    verify(storyRepo).save(existingStory);
+    verify(storyMapper).storyToStoryResponseDto(existingStory);
+  }
+
+  @Test
+  void replaceStoryById_NonExistingStory_ShouldThrowException() {
+    long nonExistingStoryId = 999L;
+    StoryUpdateDto updateDto = new StoryUpdateDto(nonExistingStoryId, "Title",
+        "Body", true, 3L);
+
+    when(storyRepo.findById(nonExistingStoryId)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> storyService.replaceStoryById(updateDto));
+    verify(storyRepo).findById(nonExistingStoryId);
+    verify(storyRepo, never()).save(any(Story.class));
+  }
 }
