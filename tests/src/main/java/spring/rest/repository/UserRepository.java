@@ -12,9 +12,6 @@ import spring.rest.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-  @Query("SELECT u FROM User u JOIN FETCH u.stories s WHERE u.id = :userId AND s.publicVisible = true")
-  Optional<User> findByIdAllPublicVisibleStories(@Param("userId") Long userId);
-
   @Query("SELECT u FROM User u LEFT JOIN FETCH u.stories s WHERE u.id = :userId AND (:publicVisible IS NULL OR s.publicVisible = :publicVisible)")
   Optional<User> findByIdAllStories(@Param("userId") Long userId,
       @Param("publicVisible") Optional<Boolean> publicVisible);
